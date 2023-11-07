@@ -1,7 +1,7 @@
 # grafana-container
 
 
-## Generate SSL certyificate into `certs/` this directory
+## Generate SSL certyificate into `certs/` directory
 
 Run the following command to generate a 2048-bit RSA private key, which is used to decrypt traffic:
 
