@@ -2,7 +2,23 @@ name: CI for Grafana Container
 
 on:
   push:
+    paths-ignore:
+      - '.gitignore'
+      - '*.md'           # Ignores all markdown files
+      - 'LICENSE'
+      - 'install_docker_debian.sh'
+      - 'install_docker_ubuntu.sh'
+      - 'certs/*'
+      # Add other paths or patterns to ignore here
   pull_request:
+    paths-ignore:
+      - '.gitignore'
+      - '*.md'           # Ignores all markdown files
+      - 'LICENSE'
+      - 'install_docker_debian.sh'
+      - 'install_docker_ubuntu.sh'
+      - 'certs/*'
+      # Add other paths or patterns to ignore here
 
 jobs:
   build-and-test-grafana-docker-compose:
