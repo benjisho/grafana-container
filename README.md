@@ -1,5 +1,16 @@
 # Grafana Container
 
+## Table of Contents
+1. [Introduction](#introduction)
+2. [Features](#features)
+3. [Getting Started](#getting-started)
+   - [Prerequisites](#prerequisites)
+   - [Installation](#installation)
+4. [Generate SSL Certificate](#generate-ssl-certificate)
+5. [Usage](#usage)
+6. [Contributing](#contributing)
+7. [License](#license)
+
 ## Introduction
 
 This project provides a containerized version of Grafana, an open-source platform for monitoring and observability. It's designed to be easy to deploy and manage, making it ideal for environments that benefit from containerization. The Grafana Container offers a scalable way to visualize and analyze metrics, logs, and traces from your environment.
@@ -65,8 +76,8 @@ docker-compose up -d
 ```
 
 2. Access Grafana by navigating to `https://localhost` in your web browser.
-1. Default login user is usually `admin` for both username and password (unless configured otherwise).
-1. Configure data sources and dashboards as per your requirements.
+3. Default login user is usually `admin` for both username and password (unless configured otherwise).
+4. Configure data sources and dashboards as per your requirements.
 
 > For example, to add a Prometheus data source:
 >
@@ -80,10 +91,10 @@ docker-compose up -d
 ## Contributing
 
 1. Fork the Project
-1. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-1. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-1. Push to the Branch (`git push origin feature/AmazingFeature`)
-1. Open a Pull Request
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## License
 
