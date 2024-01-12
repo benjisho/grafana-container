@@ -6,7 +6,7 @@
 3. [Getting Started](#getting-started)
    - [Prerequisites](#prerequisites)
    - [Installation](#installation)
-4. [Generate SSL Certificate](#generate-ssl-certificate)
+4. [Generate Self-Signed SSL Certificate](#generate-ssl-self-signed-certificate-into-certs-directory)
 5. [Usage](#usage)
 6. [Monitoring Container Logs](#monitoring-container-logs)
 7. [Contributing](#contributing)
@@ -47,7 +47,7 @@ cd grafana-container
 
 ---
 
-## Generate SSL certificate into `certs/` directory
+## Generate SSL self-signed certificate into `certs/` directory
 
 > **Note:** This section is relevant if you haven't generated a well-known SSL certificate from a certified authority.
 > These will guide you on creating a self-signed certificate, useful for testing or development purposes.
