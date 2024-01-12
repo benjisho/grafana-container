@@ -120,15 +120,14 @@ This section guides you on how to use `docker-compose logs -f` to follow the log
    docker-compose logs -f nginx
    ```
 
-### Interpreting Common Log Outputs
-- **Grafana Logs:** Look for indications of successful startup, connection to data sources, and any error messages related to rendering or querying data.
+### Tips for Log Outputs
+- **Grafana Logs:** Look for indications of successful startup, connection to data sources, and any error messages related to querying data.
 - **Nginx Logs:** These logs will include information about HTTP requests, responses, and any errors related to network connections or SSL/TLS certificates.
 
 > **Note:** Keep in mind that the volume of logs can be high depending on the level of activity. It's advisable to filter or search through the logs for specific keywords related to the issues you're investigating.
 
 ---
 
-Please let me know if there's anything else you would like to include or if any modifications are needed!
 ## Contributing
 
 1. Fork the Project
@@ -136,6 +135,8 @@ Please let me know if there's anything else you would like to include or if any 
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+---
 
 ## License
 
