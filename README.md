@@ -47,7 +47,7 @@ cd grafana-container
 
 ---
 
-## Generate SSL certyificate into `certs/` directory
+## Generate SSL certificate into `certs/` directory
 
 > **Note:** This section is relevant if you haven't generated a well-known SSL certificate from a certified authority.
 > These will guide you on creating a self-signed certificate, useful for testing or development purposes.
