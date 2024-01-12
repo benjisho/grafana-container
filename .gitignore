@@ -74,6 +74,10 @@ certs/*.key
 certs/*.csr
 certs/*.crt
 
+# useful-scripts directory #
+###########################
+useful-scripts/*
+
 # Docker #
 ##########
 docker-compose.override.yml
