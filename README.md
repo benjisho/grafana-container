@@ -29,6 +29,8 @@ This project provides a containerized version of Grafana, an open-source platfor
 - Docker and Docker Compose installed on your system.
 - Basic understanding of containerization and Grafana.
 
+---
+
 ### Installation
 
 1. Clone the repository:
@@ -42,6 +44,8 @@ git clone https://github.com/benjisho/grafana-container.git
 ```bash
 cd grafana-container
 ```
+
+---
 
 ## Generate SSL certyificate into `certs/` directory
 
@@ -66,6 +70,8 @@ openssl req -new -key certs/server.key -out certs/server.csr
 openssl x509 -req -days 365 -in certs/server.csr -signkey certs/server.key -out certs/server.crt
 ```
 
+---
+
 ## Usage
 
 To use the Grafana Container:
@@ -88,6 +94,8 @@ docker-compose up -d
 
 5. Explore and create dashboards to visualize your data.
    For more detailed usage instructions, refer to the [Grafana documentation](https://grafana.com/docs/).
+
+---
 
 ## Monitoring Container Logs
 
