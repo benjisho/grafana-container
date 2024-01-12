@@ -53,7 +53,7 @@ ci:
 # Using pre-commit
 
 # docker pull python:3.9
-# docker run -it --rm -v $(pwd):/app -w /app python:3.9 bash
+# docker run -it --rm -v $(pwd):/repo python:3.9 bash
 # pip install pre-commit
 # cd /repo
 # pre-commit run --all-files
