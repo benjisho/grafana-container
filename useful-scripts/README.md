@@ -12,7 +12,7 @@ This script automates the installation of Docker on Debian systems (specifically
 - Verifies the installation by running a test Docker container.
 
 To run the script, execute:
-```
+```bash
 sudo bash install_docker_debian.sh
 ```
 
