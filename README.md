@@ -1,6 +1,6 @@
 # Grafana Container
 
-## Table of Contents
+# Table of Contents
 1. [Introduction](#introduction)
 2. [Features](#features)
 3. [Getting Started](#getting-started)
@@ -8,8 +8,9 @@
    - [Installation](#installation)
 4. [Generate SSL Certificate](#generate-ssl-certificate)
 5. [Usage](#usage)
-6. [Contributing](#contributing)
-7. [License](#license)
+6. [Monitoring Container Logs](#monitoring-container-logs)
+7. [Contributing](#contributing)
+8. [License](#license)
 
 ## Introduction
 
@@ -88,6 +89,46 @@ docker-compose up -d
 5. Explore and create dashboards to visualize your data.
    For more detailed usage instructions, refer to the [Grafana documentation](https://grafana.com/docs/).
 
+## Monitoring Container Logs
+
+This section guides you on how to use `docker-compose logs -f` to follow the log output of the Grafana and Nginx containers in real-time.
+
+### Command Explanation
+- `docker-compose logs -f`: This command fetches the logs of the containers.
+- The `-f` flag means "follow", allowing you to view the log output in real-time.
+
+### Steps to Follow Logs
+1. Navigate to where your `docker-compose.yml` file is located.
+2. Execute the following command to follow the logs for all services:
+
+   ```bash
+   docker-compose logs -f
+   ```
+   
+   This will display a continuous stream of logs of all containers in the `docker-compose.yml`.
+
+3. If you want to follow the logs of a specific container from the `docker-compose.yml`, specify the service name.
+   For example, to follow only the Grafana logs, use:
+
+   ```bash
+   docker-compose logs -f grafana
+   ```
+
+   Similarly, for Nginx logs:
+
+   ```bash
+   docker-compose logs -f nginx
+   ```
+
+### Interpreting Common Log Outputs
+- **Grafana Logs:** Look for indications of successful startup, connection to data sources, and any error messages related to rendering or querying data.
+- **Nginx Logs:** These logs will include information about HTTP requests, responses, and any errors related to network connections or SSL/TLS certificates.
+
+> **Note:** Keep in mind that the volume of logs can be high depending on the level of activity. It's advisable to filter or search through the logs for specific keywords related to the issues you're investigating.
+
+---
+
+Please let me know if there's anything else you would like to include or if any modifications are needed!
 ## Contributing
 
 1. Fork the Project
