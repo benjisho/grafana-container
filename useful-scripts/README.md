@@ -5,29 +5,36 @@ This directory contains scripts that are helpful for setting up the Grafana Cont
 ## Scripts
 
 ### 1. `install_docker_debian.sh`
+
 This script automates the installation of Docker on Debian systems (specifically tested on Debian 11.8). It performs the following steps:
+
 - Uninstalls old or conflicting Docker packages.
 - Sets up Docker's apt repository.
 - Installs Docker Engine.
 - Verifies the installation by running a test Docker container.
 
 To run the script, execute:
+
 ```bash
 sudo bash install_docker_debian.sh
 ```
 
 ## Usage
+
 To use these scripts:
+
 1. Ensure you have `sudo` privileges on your Debian or Ubuntu system.
-2. Download the script corresponding to your operating system.
-3. Give execute permission to the script (if necessary) using `chmod +x script_name.sh`.
-4. Run the script with `sudo`.
+1. Download the script corresponding to your operating system.
+1. Give execute permission to the script (if necessary) using `chmod +x script_name.sh`.
+1. Run the script with `sudo`.
 
 > **Note:** These scripts are intended for quick setup in a development environment.
 > For production environments, please review and modify the scripts as needed to suit your security and configuration requirements.
 
 ## Contributing
+
 Contributions to improve these scripts or add new ones are welcome. Please follow the standard process of forking the repository, making your changes, and submitting a pull request.
 
 ## License
+
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file in the main directory for
