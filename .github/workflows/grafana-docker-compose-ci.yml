@@ -40,8 +40,8 @@ jobs:
 
     - name: Pull Docker images
       run: |
-        docker pull grafana/grafana:main-ubuntu
-        docker pull nginx:latest
+        docker pull grafana/grafana:11.6.0-ubuntu
+        docker pull nginx:1.21.6
 
     - name: Start services
       run: docker compose up -d
@@ -51,9 +51,54 @@ jobs:
         sleep 30
         curl --retry 5 --retry-delay 5 --retry-connrefused --insecure https://localhost | grep '.*"/login".*Found*'
 
+    - name: Lint Nginx configuration
+      run: nginx -t -c $(pwd)/nginx.conf
+
+    - name: Validate Docker Compose file
+      run: docker-compose config
+
     - name: Stop and remove services
       run: docker compose down -v
 
     - name: Remove Docker images
       run: |
-        docker image rm grafana/grafana:main-ubuntu nginx:latest
+        docker image rm grafana/grafana:11.6.0-ubuntu nginx:1.21.6
+
+  test-on-multiple-os:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Generate SSL/TLS certificates
+        run: |
+          mkdir -p certs
+          openssl genrsa -out certs/server.key 2048
+          openssl req -new -key certs/server.key -out certs/server.csr -subj "/CN=localhost"
+          openssl x509 -req -days 365 -in certs/server.csr -signkey certs/server.key -out certs/server.crt
+
+      - name: Pull Docker images
+        run: |
+          docker pull grafana/grafana:11.6.0-ubuntu
+          docker pull nginx:1.21.6
+
+      - name: Start services
+        run: docker compose up -d
+
+      - name: Verify Grafana service
+        run: |
+          sleep 30
+          curl --retry 5 --retry-delay 5 --retry-connrefused --insecure https://localhost | grep '.*"/login".*Found*'
+
+      - name: Stop and remove services
+        run: docker compose down -v
+
+      - name: Remove Docker images
+        run: |
+          docker image rm grafana/grafana:11.6.0-ubuntu nginx:1.21.6
