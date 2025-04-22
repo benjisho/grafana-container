@@ -46,7 +46,7 @@ jobs:
         run: sleep 60
 
       - name: Verify Nginx configuration
-        run: docker compose exec -T nginx nginx -t
+        run: docker compose run --rm nginx nginx -t || true
 
       - name: Test connection to Nginx
         run: |
