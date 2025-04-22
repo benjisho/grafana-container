@@ -1,6 +1,7 @@
 name: CI for Grafana Container
 
 on:
+  workflow_dispatch:  # enable manual runs
   push:
     paths-ignore:
       - '.gitignore'
@@ -31,13 +32,6 @@ jobs:
           openssl genrsa -out certs/server.key 2048
           openssl req -new -key certs/server.key -out certs/server.csr -subj "/CN=localhost"
           openssl x509 -req -days 365 -in certs/server.csr -signkey certs/server.key -out certs/server.crt
-
-      - name: Update docker-compose.yml with service dependencies
-        run: |
-          # Add depends_on to ensure Nginx starts after Grafana
-          sed -i '/image: nginx:latest/a\    depends_on:\n      - grafana' docker-compose.yml
-          # Update to use specific image versions
-          sed -i 's|image: nginx:latest|image: nginx:1.21.6|g' docker-compose.yml
 
       - name: Start services
         run: docker-compose up -d
