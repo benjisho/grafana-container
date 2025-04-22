@@ -31,6 +31,18 @@ To use these scripts:
 > **Note:** These scripts are intended for quick setup in a development environment.
 > For production environments, please review and modify the scripts as needed to suit your security and configuration requirements.
 
+## Pre-commit Hook
+
+To ensure code quality, a pre-commit hook is configured for linting Dockerfiles using hadolint. The configuration is as follows:
+
+```yaml
+-   id: hadolint
+    name: Lint Dockerfiles with hadolint
+    entry: hadolint
+    language: system
+    types: [dockerfile]
+```
+
 ## Contributing
 
 Contributions to improve these scripts or add new ones are welcome. Please follow the standard process of forking the repository, making your changes, and submitting a pull request.

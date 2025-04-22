@@ -7,10 +7,11 @@
    - [Prerequisites](#prerequisites)
    - [Installation](#installation)
 4. [Generate Self-Signed SSL Certificate](#generate-ssl-self-signed-certificate-into-certs-directory)
-5. [Usage](#usage)
-6. [Monitoring Container Logs](#monitoring-container-logs)
-7. [Contributing](#contributing)
-8. [License](#license)
+5. [Updated Grafana Version](#updated-grafana-version)
+6. [Usage](#usage)
+7. [Monitoring Container Logs](#monitoring-container-logs)
+8. [Contributing](#contributing)
+9. [License](#license)
 
 ## Introduction
 
@@ -69,6 +70,25 @@ openssl req -new -key certs/server.key -out certs/server.csr
 ```bash
 openssl x509 -req -days 365 -in certs/server.csr -signkey certs/server.key -out certs/server.crt
 ```
+
+---
+
+## Updated Grafana Version
+
+The Grafana container now uses version `11.6.0-ubuntu`. This version is based on Ubuntu and provides enhanced compatibility and stability. Ensure that your environment is compatible with this version before deployment.
+
+### Key Notes:
+- The Ubuntu-based image may have different dependencies compared to the Alpine-based images. Ensure that any custom plugins or configurations are compatible.
+- If you encounter issues, refer to the [Grafana Docker documentation](https://grafana.com/docs/grafana/latest/installation/docker/) for troubleshooting.
+
+### Running the Setup
+To start the Grafana and Nginx services, use the following command:
+
+```bash
+docker-compose up -d
+```
+
+This will pull the specified Grafana version (`11.6.0-ubuntu`) and start the services.
 
 ---
 
