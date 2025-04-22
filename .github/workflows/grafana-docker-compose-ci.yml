@@ -44,7 +44,7 @@ jobs:
         docker pull nginx:latest
 
     - name: Start services
-      run: docker-compose up -d
+      run: docker compose up -d
 
     - name: Verify Grafana service
       run: |
@@ -52,7 +52,7 @@ jobs:
         curl --retry 5 --retry-delay 5 --retry-connrefused --insecure https://localhost | grep '.*"/login".*Found*'
 
     - name: Stop and remove services
-      run: docker-compose down -v
+      run: docker compose down -v
 
     - name: Remove Docker images
       run: |
