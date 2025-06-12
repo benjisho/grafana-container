@@ -75,7 +75,7 @@ openssl x509 -req -days 365 -in certs/server.csr -signkey certs/server.key -out 
 
 ## Updated Grafana Version
 
-The Grafana container now uses version `11.6.0-ubuntu`. This version is based on Ubuntu and provides enhanced compatibility and stability. Ensure that your environment is compatible with this version before deployment.
+The Grafana container now uses version `12.0.1-ubuntu`. This version is based on Ubuntu and provides enhanced compatibility and stability. Ensure that your environment is compatible with this version before deployment.
 
 ### Key Notes:
 - The Ubuntu-based image may have different dependencies compared to the Alpine-based images. Ensure that any custom plugins or configurations are compatible.
@@ -85,10 +85,40 @@ The Grafana container now uses version `11.6.0-ubuntu`. This version is based on
 To start the Grafana and Nginx services, use the following command:
 
 ```bash
-docker-compose up -d
+docker compose up -d
+```
+This will pull the specified Grafana version (`12.0.1-ubuntu`) and start the services.
+## Configuration
+
+Copy `.env.example` to `.env` and adjust the variables:
+
+```bash
+cp .env.example .env
 ```
 
-This will pull the specified Grafana version (`11.6.0-ubuntu`) and start the services.
+- `GRAFANA_ADMIN_USER` and `GRAFANA_ADMIN_PASSWORD` set the initial Grafana credentials.
+- `NGINX_SERVER_NAME` defines the hostname served by Nginx.
+- `SSL_CERT_PATH` and `SSL_KEY_PATH` point to your certificate files.
+
+You can change exposed ports or paths by editing `docker-compose.yml`.
+
+## Persisting Data
+
+Grafana stores its data in `/var/lib/grafana`. The compose file uses a named volume `grafana-storage`. To persist data on the host, map a directory instead:
+
+```yaml
+volumes:
+  - ./grafana-data:/var/lib/grafana
+```
+
+## Troubleshooting
+
+- Ensure the SSL certificates referenced in `.env` exist and are readable by Nginx.
+- If Grafana cannot write to the data directory, adjust its permissions:
+
+```bash
+sudo chown -R 472:472 ./grafana-data
+```
 
 ---
 
@@ -99,7 +129,7 @@ To use the Grafana Container:
 1. Start the container:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 2. Access Grafana by navigating to `https://localhost` in your web browser.
@@ -119,10 +149,10 @@ docker-compose up -d
 
 ## Monitoring Container Logs
 
-This section guides you on how to use `docker-compose logs -f` to follow the log output of the Grafana and Nginx containers in real-time.
+This section guides you on how to use `docker compose logs -f` to follow the log output of the Grafana and Nginx containers in real-time.
 
 ### Command Explanation
-- `docker-compose logs -f`: This command fetches the logs of the containers.
+- `docker compose logs -f`: This command fetches the logs of the containers.
 - The `-f` flag means "follow", allowing you to view the log output in real-time.
 
 ### Steps to Follow Logs
@@ -130,22 +160,22 @@ This section guides you on how to use `docker-compose logs -f` to follow the log
 2. Execute the following command to follow the logs for all services:
 
    ```bash
-   docker-compose logs -f
+   docker compose logs -f
    ```
-   
+
    This will display a continuous stream of logs of all containers in the `docker-compose.yml`.
 
 3. If you want to follow the logs of a specific container from the `docker-compose.yml`, specify the service name.
    For example, to follow only the Grafana logs, use:
 
    ```bash
-   docker-compose logs -f grafana
+   docker compose logs -f grafana
    ```
 
    Similarly, for Nginx logs:
 
    ```bash
-   docker-compose logs -f nginx
+   docker compose logs -f nginx
    ```
 
 ### Tips for Log Outputs
@@ -168,4 +198,4 @@ This section guides you on how to use `docker-compose logs -f` to follow the log
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

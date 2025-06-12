@@ -8,7 +8,7 @@
 - Pre-commit hook for Dockerfile linting.
 
 ### Changed
-- Updated Grafana version to `11.6.0-ubuntu`.
+- Updated Grafana version to `12.0.1-ubuntu`.
 
 ### Fixed
 - None yet.
