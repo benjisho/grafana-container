@@ -49,4 +49,4 @@ Contributions to improve these scripts or add new ones are welcome. Please follo
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file in the main directory for
+This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file in the main directory for details.
