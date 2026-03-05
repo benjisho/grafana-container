@@ -96,7 +96,7 @@ Copy `.env.example` to `.env` and adjust the variables:
 cp .env.example .env
 ```
 
-- `GRAFANA_ADMIN_USER` and `GRAFANA_ADMIN_PASSWORD` set the initial Grafana credentials.
+- `GRAFANA_ADMIN_USER` and `GRAFANA_ADMIN_PASSWORD` set the initial Grafana credentials. `GRAFANA_ADMIN_PASSWORD` is required and must be set explicitly in `.env` (no default fallback).
 - `NGINX_SERVER_NAME` defines the hostname served by Nginx.
 - `SSL_CERT_PATH` and `SSL_KEY_PATH` point to your certificate files.
 
@@ -133,7 +133,7 @@ docker compose up -d
 ```
 
 2. Access Grafana by navigating to `https://localhost` in your web browser.
-3. Default login user is usually `admin` for both username and password (unless configured otherwise).
+3. Sign in with the credentials you configured in `.env` (`GRAFANA_ADMIN_USER` and `GRAFANA_ADMIN_PASSWORD`).
 4. Configure data sources and dashboards as per your requirements.
 
 > For example, to add a Prometheus data source:
