@@ -92,6 +92,9 @@ class TestCiBehavior(unittest.TestCase):
     def test_ci_runs_repository_behavior_tests(self):
         self.assertIn("python -m unittest discover -s tests -p 'test_*.py'", self.workflow_text)
 
+    def test_ci_sets_required_compose_env_for_grafana_password(self):
+        self.assertIn("GRAFANA_ADMIN_PASSWORD: ci-test-admin-password", self.workflow_text)
+
     def test_ci_does_not_soft_fail_critical_checks(self):
         self.assertNotIn("|| true", self.workflow_text)
 
