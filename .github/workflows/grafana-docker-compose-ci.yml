@@ -1,7 +1,7 @@
 name: CI for Grafana Container
 
 on:
-  workflow_dispatch:  # enable manual runs
+  workflow_dispatch:
   push:
     paths-ignore:
       - '.gitignore'
@@ -19,12 +19,23 @@ on:
       - 'useful-scripts/install_docker_ubuntu.sh'
       - 'certs/*'
 
+permissions:
+  contents: read
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run behavior tests
+        run: python -m unittest discover -s tests -p 'test_*.py'
 
       - name: Generate SSL/TLS certificates
         run: |
@@ -33,30 +44,34 @@ jobs:
           openssl req -new -key certs/server.key -out certs/server.csr -subj "/CN=localhost"
           openssl x509 -req -days 365 -in certs/server.csr -signkey certs/server.key -out certs/server.crt
 
+      - name: Validate compose configuration
+        run: docker compose config
+
       - name: Start services
         run: docker compose up -d
 
-      - name: Check if containers are running
-        run: docker ps -a
-
-      - name: Check docker-compose logs
-        run: docker compose logs
-
-      - name: Wait longer for services to fully start
-        run: sleep 60
+      - name: Wait for containers to be healthy
+        run: |
+          set -euo pipefail
+          for service in grafana nginx; do
+            echo "Waiting for $service health..."
+            timeout 180 bash -c "until [ \"$(docker inspect --format='{{.State.Health.Status}}' $service 2>/dev/null || true)\" = 'healthy' ]; do sleep 3; done"
+            echo "$service is healthy"
+          done
 
       - name: Verify Nginx configuration
-        run: docker compose run --rm nginx nginx -t || true
+        run: docker compose run --rm nginx nginx -t
 
       - name: Test connection to Nginx
-        run: |
-          # Try connecting to Nginx directly
-          curl -v --retry 10 --retry-delay 10 --retry-connrefused --insecure https://localhost || true
+        run: curl -fsS --retry 10 --retry-delay 5 --retry-connrefused --insecure https://localhost
 
       - name: Test connection to Grafana
-        run: |
-          # Try connecting to Grafana directly
-          curl -v --retry 5 --retry-delay 5 --retry-connrefused http://localhost:3000 || true
+        run: curl -fsS --retry 10 --retry-delay 5 --retry-connrefused http://localhost:3000/api/health
+
+      - name: Dump logs on failure
+        if: failure()
+        run: docker compose logs --no-color
 
       - name: Stop and remove services
-        run: docker compose down -v
+        if: always()
+        run: docker compose down -v --remove-orphans

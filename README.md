@@ -97,10 +97,24 @@ cp .env.example .env
 ```
 
 - `GRAFANA_ADMIN_USER` and `GRAFANA_ADMIN_PASSWORD` set the initial Grafana credentials.
-- `NGINX_SERVER_NAME` defines the hostname served by Nginx.
-- `SSL_CERT_PATH` and `SSL_KEY_PATH` point to your certificate files.
+- `NGINX_SERVER_NAME` defines the hostname served by Nginx and used by Grafana root URL.
+- `SSL_CERT_PATH` and `SSL_KEY_PATH` document certificate locations mounted in Nginx.
 
 You can change exposed ports or paths by editing `docker-compose.yml`.
+
+---
+
+## Testing
+
+Run the repository tests:
+
+```bash
+python -m unittest discover -s tests -p "test_*.py"
+```
+
+These tests assert behavior-oriented config invariants for `docker-compose.yml` and `nginx.conf`, so refactors do not silently remove security or reverse-proxy essentials.
+
+---
 
 ## Persisting Data
 
