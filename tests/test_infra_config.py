@@ -35,6 +35,10 @@ class TestComposeConfiguration(unittest.TestCase):
         occurrences = self.compose_text.count("no-new-privileges:true")
         self.assertGreaterEqual(occurrences, 2)
 
+    def test_nginx_healthcheck_targets_https_with_self_signed_tolerance(self):
+        self.assertIn("--no-check-certificate", self.compose_text)
+        self.assertIn("https://localhost", self.compose_text)
+
     def test_nginx_runtime_filesystem_hardening_present(self):
         self.assertIn("read_only: true", self.compose_text)
         self.assertIn("tmpfs:", self.compose_text)

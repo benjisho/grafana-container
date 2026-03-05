@@ -41,7 +41,7 @@ services:
     security_opt:
       - no-new-privileges:true
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost"]
+      test: ["CMD", "wget", "--spider", "-q", "--no-check-certificate", "https://localhost"]
       interval: 30s
       timeout: 10s
       retries: 5
