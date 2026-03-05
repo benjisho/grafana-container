@@ -54,8 +54,40 @@ jobs:
       - name: Check docker-compose logs
         run: docker compose logs
 
-      - name: Wait longer for services to fully start
-        run: sleep 60
+      - name: Wait for Grafana and Nginx health checks
+        run: |
+          set -euo pipefail
+          timeout_secs=180
+          interval_secs=5
+          elapsed=0
+
+          while [ "$elapsed" -lt "$timeout_secs" ]; do
+            grafana_container="$(docker compose ps -q grafana)"
+            nginx_container="$(docker compose ps -q nginx)"
+
+            if [ -z "$grafana_container" ] || [ -z "$nginx_container" ]; then
+              echo "Waiting for containers to be created..."
+            else
+              grafana_health="$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$grafana_container")"
+              nginx_health="$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$nginx_container")"
+
+              echo "grafana health: $grafana_health"
+              echo "nginx health: $nginx_health"
+
+              if [ "$grafana_health" = "healthy" ] && [ "$nginx_health" = "healthy" ]; then
+                echo "Grafana and Nginx are healthy."
+                exit 0
+              fi
+            fi
+
+            sleep "$interval_secs"
+            elapsed=$((elapsed + interval_secs))
+          done
+
+          echo "Timed out after ${timeout_secs}s waiting for Grafana and Nginx to become healthy."
+          docker compose ps
+          docker compose logs
+          exit 1
 
       - name: Verify Nginx configuration (gating)
         run: docker compose run --rm nginx nginx -t
