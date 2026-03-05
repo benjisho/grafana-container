@@ -46,9 +46,7 @@ jobs:
           openssl x509 -req -days 365 -in certs/server.csr -signkey certs/server.key -out certs/server.crt
 
       - name: Prepare environment variables for docker compose
-        run: |
-          cp .env.example .env
-          sed -i 's/^GRAFANA_ADMIN_PASSWORD=.*/GRAFANA_ADMIN_PASSWORD=ci-admin-password/' .env
+        run: cp .env.example .env
 
       - name: Start services
         run: docker compose up -d
