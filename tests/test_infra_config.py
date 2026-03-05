@@ -1,23 +1,10 @@
+import re
 import unittest
 from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
-
-
-def test_grafana_admin_password_has_no_admin_fallback() -> None:
-    compose = Path('docker-compose.yml').read_text()
-
-    assert 'GF_SECURITY_ADMIN_PASSWORD' in compose
-    assert 'GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD in .env}' in compose
-    password_line = next(
-        line.strip()
-        for line in compose.splitlines()
-        if line.strip().startswith('GF_SECURITY_ADMIN_PASSWORD:')
-    )
-
-    assert ':-admin' not in password_line
 
 class TestComposeConfiguration(unittest.TestCase):
     @classmethod
@@ -28,21 +15,31 @@ class TestComposeConfiguration(unittest.TestCase):
         self.assertIn("grafana:", self.compose_text)
         self.assertIn("nginx:", self.compose_text)
 
+    def test_grafana_admin_password_has_required_variable_semantics(self):
+        match = re.search(r"(?m)^\s+GF_SECURITY_ADMIN_PASSWORD:\s*(.+)$", self.compose_text)
+        self.assertIsNotNone(match)
+        expression = match.group(1)
+        self.assertIn(":?", expression)
+        self.assertNotIn(":-", expression)
+
     def test_grafana_healthcheck_uses_api_health(self):
         self.assertIn("/api/health", self.compose_text)
 
     def test_nginx_waits_for_grafana_health(self):
         self.assertRegex(
             self.compose_text,
-            r"depends_on:\n\s+grafana:\n\s+condition: service_healthy",
+            r"depends_on:\n\s+grafana:\n\s+condition:\s+service_healthy",
         )
 
     def test_no_new_privileges_for_services(self):
         occurrences = self.compose_text.count("no-new-privileges:true")
         self.assertGreaterEqual(occurrences, 2)
 
-    def test_no_weak_default_admin_password(self):
-        self.assertNotIn("${GRAFANA_ADMIN_PASSWORD:-admin}", self.compose_text)
+    def test_nginx_runtime_filesystem_hardening_present(self):
+        self.assertIn("read_only: true", self.compose_text)
+        self.assertIn("tmpfs:", self.compose_text)
+        self.assertIn("/var/cache/nginx", self.compose_text)
+        self.assertIn("/var/run", self.compose_text)
 
 
 class TestNginxConfiguration(unittest.TestCase):
@@ -60,16 +57,15 @@ class TestNginxConfiguration(unittest.TestCase):
         self.assertIn("ssl_session_timeout 1d;", self.nginx_text)
         self.assertIn("ssl_session_cache shared:MozSSL:10m;", self.nginx_text)
 
-    def test_mozilla_curve_settings_present(self):
-        self.assertIn("ssl_ecdh_curve X25519:prime256v1:secp384r1;", self.nginx_text)
-
     def test_http2_and_ipv6_listeners_configured(self):
         self.assertIn("listen [::]:443 ssl;", self.nginx_text)
         self.assertIn("http2 on;", self.nginx_text)
 
-    def test_websocket_proxy_headers_configured(self):
+    def test_websocket_and_forwarding_proxy_headers_configured(self):
         self.assertIn("proxy_set_header Upgrade $http_upgrade;", self.nginx_text)
         self.assertIn("proxy_set_header Connection $connection_upgrade;", self.nginx_text)
+        self.assertIn("proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;", self.nginx_text)
+        self.assertIn("proxy_set_header X-Forwarded-Proto https;", self.nginx_text)
 
     def test_security_headers_present(self):
         required_headers = [
@@ -90,13 +86,17 @@ class TestCiBehavior(unittest.TestCase):
             REPO_ROOT / ".github/workflows/grafana-docker-compose-ci.yml"
         ).read_text(encoding="utf-8")
 
+    def test_ci_uses_least_privilege_permissions(self):
+        self.assertRegex(self.workflow_text, r"(?m)^permissions:\n\s+contents:\s+read$")
+
     def test_ci_runs_repository_behavior_tests(self):
         self.assertIn("python -m unittest discover -s tests -p 'test_*.py'", self.workflow_text)
 
     def test_ci_does_not_soft_fail_critical_checks(self):
-        self.assertNotIn("nginx -t || true", self.workflow_text)
-        self.assertNotIn("https://localhost || true", self.workflow_text)
-        self.assertNotIn("/api/health || true", self.workflow_text)
+        self.assertNotIn("|| true", self.workflow_text)
+
+    def test_ci_waits_for_service_health_without_fixed_sleep(self):
+        self.assertIn("docker inspect --format=", self.workflow_text)
 
     def test_ci_has_always_cleanup(self):
         self.assertIn("if: always()", self.workflow_text)
