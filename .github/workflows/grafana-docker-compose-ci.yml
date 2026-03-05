@@ -10,6 +10,7 @@ on:
       - 'useful-scripts/install_docker_debian.sh'
       - 'useful-scripts/install_docker_ubuntu.sh'
       - 'certs/*'
+
   pull_request:
     paths-ignore:
       - '.gitignore'
@@ -19,12 +20,15 @@ on:
       - 'useful-scripts/install_docker_ubuntu.sh'
       - 'certs/*'
 
+permissions:
+  contents: read
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Generate SSL/TLS certificates
         run: |
